@@ -40,7 +40,7 @@ We need to clone the repository and organize the directory structure for **colco
 ```bash
 cd ~
 git clone https://github.com/Ihebzaouali/Factory-patrol-robot.git
-cd rallp_oorb_ws/
+cd rallp_ws/
 mv rallp ~          # Move configuration files to home
 mkdir src           # Create source folder
 mv * src/           # Move packages into src (ignore error about moving src into itself)
