@@ -40,10 +40,11 @@ We need to clone the repository and organize the directory structure for **colco
 ```bash
 cd ~
 git clone https://github.com/Ihebzaouali/Factory-patrol-robot.git
-cd rallp_ws/
+cd Factory-patrol-robot/
+mv rallp_ws ~       # Move workspace to home
+cd                  # Go back to home directory 
+cd rallp_ws/        # Enter the workspace folder
 mv rallp ~          # Move configuration files to home
-mkdir src           # Create source folder
-mv * src/           # Move packages into src (ignore error about moving src into itself)
 
 ```
 ## Fix the LFS files:
@@ -57,7 +58,7 @@ git lfs install
 
 #### 2. Fetch and checkout the LFS files:
 ```bash
-cd rallp_oorb_ws
+cd rallp_ws
 git lfs fetch --all
 git lfs checkout
 ```
@@ -99,7 +100,7 @@ ros-jazzy-nmea-msgs ros-jazzy-rtcm-msgs libasio-dev
 Before running any nodes, you must build the packages:
 
 ```bash
-cd ~/rallp_oorb_ws/
+cd ~/rallp_ws/
 colcon build
 source install/setup.bash
 
