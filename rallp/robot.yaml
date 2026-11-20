@@ -1,0 +1,38 @@
+serial_number: rallp-0000
+version: 0
+system:
+  hosts:
+    - hostname: rallp-0000
+      ip: 127.0.0.1
+  ros2:
+    namespace: rallp_0000
+#  workspaces:
+#    - /path/to/my/workspace/install/setup.bash
+platform:
+  enable_ekf: true
+  controller: ps4
+  # attachments:
+  #   - name: front_bumper
+  #     type: rallp.bumper
+  #     parent: front_bumper_mount
+  #   - name: rear_bumper
+  #     type: rallp.bumper
+  #     parent: rear_bumper_mount
+  #   - name: top_plate
+  #     type: rallp.top_plate
+sensors:
+  imu:
+    - model: phidgets_spatial
+      urdf_enabled: true
+      launch_enabled: true
+      parent: base_link
+      xyz: [0.059, 0.0, 0.161275]
+      rpy: [0.0, 0.0, 0.0]
+      ros_parameters:
+        phidgets_spatial:
+          data_interval_ms: 20
+  lidar2d:
+    - model: hokuyo_ust
+      parent: chassis_link
+      xyz: [0.17447, 0.0, 0.27675]
+      rpy: [0.0, 0.0, 0.0]
