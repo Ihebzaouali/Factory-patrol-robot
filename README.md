@@ -1,5 +1,6 @@
 # Factory-patrol-robot
 Autonomous factory patrol robot for industrial environments with security monitoring 
+<img width="1728" height="929" alt="image" src="https://github.com/user-attachments/assets/b6414bbb-6565-4898-8fe9-034124d4fdfa" />
 
 # 🤖 RALLP Workspace: Setup and Navigation
 
