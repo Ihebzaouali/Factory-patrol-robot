@@ -1,0 +1,274 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+  <xacro:arg name="namespace" default="" />
+  <xacro:arg name="is_sim" default="false" />
+  <xacro:arg name="gazebo_controllers" default="$(find rallp_control)/config/rallp/control.yaml"/>
+  <xacro:arg name="use_platform_controllers" default="true"/>
+
+  <!-- Global Variables -->
+  <xacro:property name="M_PI" value="${math.pi}"/>
+
+  <xacro:macro name="rallp" params="control:='diff_4wd' front_wheels:='outdoor' rear_wheels:='outdoor'">
+    <!-- Chassis Size -->
+    <xacro:property name="chassis_mass" value="70"/>
+    <xacro:property name="chassis_x_size" value="0.860"/>
+    <xacro:property name="chassis_y_size" value="0.378"/>
+    <xacro:property name="chassis_z_size" value="0.229559"/>
+
+    <!-- Wheel base and track  -->
+    <xacro:property name="wheel_base" value="0.512"/>
+    <xacro:property name="wheel_track" value="0.562"/>
+
+    <!-- Chassis Positions relative to center of rotation -->
+    <xacro:if value="${control == 'diff_4wd'}">
+      <xacro:property name="chassis_x" value="0"/>
+      <xacro:property name="chassis_y" value="0"/>
+      <xacro:property name="chassis_z" value="0"/>
+    </xacro:if>
+
+
+    <!-- Suspension Beam Mounting Positions -->
+    <xacro:property name="chassis_suspension_mount_x" value="0.0"/>
+    <xacro:property name="chassis_suspension_mount_y" value="0.192"/>
+    <xacro:property name="chassis_suspension_mount_z" value="0.03763"/>
+
+
+
+    <!-- Base Link: center of rotation at the bottom of the robot -->
+    <link name="base_link"/>
+
+    <!-- Chassis Link: center of the bottom of the robot chassis -->
+    <link name="chassis_link">
+      <visual>
+        <geometry>
+          <mesh filename="package://rallp_platform_description/meshes/base_link.STL" />
+        </geometry>
+        <material name="Cyan">
+        <color rgba="1.0 1.0 1.0 1.0"/>
+      </material>
+      </visual>
+
+      <collision>
+        <geometry>
+          <mesh filename="package://rallp_platform_description/meshes/base_link.STL" />
+        </geometry>
+      </collision>
+      <inertial>
+        <mass value="${chassis_mass}"/>
+        <origin xyz="0 0 ${chassis_z_size/2}" rpy="0 0 0"/>
+        <inertia
+          ixx="${ chassis_mass/12 * (chassis_y_size**2 + chassis_z_size**2) }" ixy="0" ixz="0"
+          iyy="${ chassis_mass/12 * (chassis_x_size**2 + chassis_z_size**2) }" iyz="0"
+          izz="${ chassis_mass/12 * (chassis_x_size**2 + chassis_y_size**2) }"
+        />
+      </inertial>
+    </link>
+
+    <joint name="chassis_joint" type="fixed">
+      <child link="chassis_link"/>
+      <parent link="base_link"/>
+      <origin xyz="${chassis_x} ${chassis_y} ${chassis_z}" rpy="0 0 0"/>
+    </joint>
+
+      <link name="fl_tof_link">
+
+    <inertial>
+      <origin xyz="-0.001771 5.7852E-06 -3.4694E-18" rpy="0 0 0" />
+      <mass value="0.0006554" />
+      <inertia ixx="2.0897E-08" ixy="7.7534E-11" ixz="-1.6739E-25" iyy="8.203E-09" iyz="-7.8232E-25" izz="1.4546E-08" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rallp_platform_description/meshes/TOF_FL.STL" />
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1"/>
+     </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rallp_platform_description/meshes/TOF_FL.STL" />
+      </geometry>
+    </collision>
+
+  </link>
+
+
+  <joint name="fl_tof_joint" type="fixed">
+    <origin xyz="0.3469 0.21148 0.021015" rpy="0 0 0" />
+    <parent link="chassis_link" />
+    <child link="fl_tof_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+  
+  
+  <link name="fr_tof_link">
+
+    <inertial>
+      <origin xyz="-0.001771 5.7852E-06 -3.4694E-18" rpy="0 0 0" />
+      <mass value="0.0006554" />
+      <inertia ixx="2.0897E-08" ixy="7.7534E-11" ixz="-1.6108E-25" iyy="8.203E-09" iyz="-7.8232E-25" izz="1.4546E-08" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rallp_platform_description/meshes/TOF_FR.STL" />
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1"/>
+     </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rallp_platform_description/meshes/TOF_FR.STL" />
+      </geometry>
+    </collision>
+
+  </link>
+
+
+  <joint name="fr_tof_joint" type="fixed">
+    <origin xyz="0.3469 -0.21148 0.021015" rpy="0 0 0" />
+    <parent link="chassis_link" />
+    <child link="fr_tof_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+  
+  
+  <link name="rl_tof_link">
+
+    <inertial>
+      <origin xyz="0.001771 -5.7852E-06 -3.4694E-18" rpy="0 0 0" />
+      <mass value="0.0006554" />
+      <inertia ixx="2.0897E-08" ixy="7.7534E-11" ixz="-2.8503E-25" iyy="8.203E-09" iyz="1.4588E-25" izz="1.4546E-08" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rallp_platform_description/meshes/TOF_BL.STL" />
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1"/>
+     </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rallp_platform_description/meshes/TOF_BL.STL" />
+      </geometry>
+    </collision>
+
+  </link>
+
+
+  <joint name="rl_tof_joint" type="fixed">
+    <origin xyz="-0.3459 0.2025 0.021015" rpy="0 0 0" />
+    <parent link="chassis_link" />
+    <child link="rl_tof_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+  
+  
+  <link name="rr_tof_link">
+
+    <inertial>
+      <origin xyz="0.001771 -5.7852E-06 0" rpy="0 0 0" />
+      <mass value="0.0006554" />
+      <inertia ixx="2.0897E-08" ixy="7.7534E-11" ixz="-2.9134E-25" iyy="8.203E-09" iyz="2.5316E-25" izz="1.4546E-08" />
+    </inertial>
+
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rallp_platform_description/meshes/TOF_BR.STL" />
+      </geometry>
+      <material name="Black">
+        <color rgba="0.0 0.0 0.0 1"/>
+     </material>
+    </visual>
+
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0" />
+      <geometry>
+        <mesh filename="package://rallp_platform_description/meshes/TOF_BR.STL" />
+      </geometry>
+    </collision>
+
+  </link>
+
+
+  <joint name="rr_tof_joint" type="fixed">
+    <origin xyz="-0.3459 -0.2025 0.021015" rpy="0 0 0" />
+    <parent link="chassis_link" />
+    <child link="rr_tof_link" />
+    <axis xyz="0 0 0" />
+  </joint>
+
+    <link name="chassis_left_suspension_mount"/>
+    <link name="chassis_right_suspension_mount"/>
+
+    <joint name="chassis_left_suspension_mount_joint" type="fixed">
+      <child link="chassis_left_suspension_mount"/>
+      <parent link="chassis_link"/>
+      <origin xyz="${chassis_suspension_mount_x} ${chassis_suspension_mount_y} ${chassis_suspension_mount_z}" rpy="0 0 0"/>
+    </joint>
+
+    <joint name="chassis_right_suspension_mount_joint" type="fixed">
+      <child link="chassis_right_suspension_mount"/>
+      <parent link="chassis_link"/>
+      <origin xyz="${chassis_suspension_mount_x} ${-chassis_suspension_mount_y} ${chassis_suspension_mount_z}" rpy="0 0 0"/>
+    </joint>
+
+    <!-- Suspension beams -->
+    <xacro:include filename="$(find rallp_platform_description)/urdf/rallp/drivetrain/suspension_beam.urdf.xacro"/>
+    <xacro:rallp_suspension_beam side="left"/>
+    <xacro:rallp_suspension_beam side="right"/>
+
+
+    <!-- Add wheels -->
+    <xacro:include filename="$(find rallp_platform_description)/urdf/rallp/drivetrain/wheels.urdf.xacro"/>
+    <xacro:rallp_drivetrain_wheels front_wheels="${front_wheels}" rear_wheels="${rear_wheels}"/>
+
+    <!-- Add drivetrain -->
+    <xacro:include filename="$(find rallp_platform_description)/urdf/generic/drivetrain/drivetrain.urdf.xacro"/>
+
+    <!-- Hardware  -->
+    <xacro:if value="$(arg is_sim)">
+      <xacro:property name="hardware_plugin" value="gz_ros2_control/GazeboSimSystem"/>
+    </xacro:if>
+    <xacro:unless value="$(arg is_sim)">
+      <xacro:property name="hardware_plugin" value="rallp_hardware_interfaces/LynxHardware"/>
+    </xacro:unless>
+
+    <xacro:if value="$(arg use_platform_controllers)">
+      <xacro:generic_drivetrain
+        name="rallp"
+        control="${control}"
+        front_wheels="${front_wheels}"
+        rear_wheels="${rear_wheels}"
+        hardware_plugin="${hardware_plugin}"
+      />
+    </xacro:if>
+
+    <!-- Base Footprint: on the ground below the robot -->
+    <link name="base_footprint"/>
+
+    <xacro:if value="${control == 'diff_4wd'}">
+      <joint name="base_footprint_joint" type="fixed">
+        <origin xyz="0 0 ${front_wheel_radius}" rpy="0 0 0" />
+        <parent link="chassis_link" />
+        <child link="base_footprint" />
+      </joint>
+    </xacro:if>
+
+  </xacro:macro>
+</robot>
