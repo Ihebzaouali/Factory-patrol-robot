@@ -42,8 +42,6 @@ cd ~
 git clone https://github.com/Ihebzaouali/Factory-patrol-robot.git
 cd Factory-patrol-robot/
 mv rallp_ws ~       # Move workspace to home
-cd                  # Go back to home directory 
-cd rallp_ws/        # Enter the workspace folder
 mv rallp ~          # Move configuration files to home
 
 ```
