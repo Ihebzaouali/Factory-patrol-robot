@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<?xml-model href="http://download.ros.org/schema/package_format3.xsd" schematypens="http://www.w3.org/2001/XMLSchema"?>
+<package format="3">
+  <name>rallp_gz</name>
+  <version>2.7.0</version>
+  <description>Rallp Gazebo Simulator</description>
+  <maintainer email="mohamedalizouari.ai@mail.ru">Mohamed Ali Zouari</maintainer>
+
+  <license>BSD</license>
+
+  <author email="mohamedalizouari.ai@mail.ru">Mohamed Ali Zouari</author>
+  <author>Mohamed Ali Zouari</author>
+
+  <buildtool_depend>ament_cmake</buildtool_depend>
+
+  <exec_depend>rallp_common</exec_depend>
+  <exec_depend>rallp_viz</exec_depend>
+  <exec_depend>gz_ros2_control</exec_depend>
+  <exec_depend>ros_gz</exec_depend>
+
+  <test_depend>ament_lint_auto</test_depend>
+  <test_depend>ament_lint_common</test_depend>
+
+  <export>
+    <build_type>ament_cmake</build_type>
+  </export>
+</package>
